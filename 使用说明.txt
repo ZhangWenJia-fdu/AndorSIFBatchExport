@@ -1,0 +1,114 @@
+Andor SIF Batch Export v1.1.0 中文使用说明
+Windows x64 / Tkinter / 本地便携版
+
+启动
+解压整个 ZIP 后双击 AndorSIFBatchExport.exe。不要单独移动 EXE，必须保留 _internal 文件夹。
+设计为无需安装 Python、Andor Solis 或连接 CCD；尚需在另一台干净 Windows 电脑验证。
+
+基本步骤
+1. 选择 Input folder 和 Output folder。
+2. 勾选至少一种 Export format，可任意组合。
+3. 如果选择显示格式，选择 Data range。仅 Raw TIFF 可不选择范围。
+4. Custom Min–Max 模式填写有限数值 Min/Max，Max 必须大于 Min。
+5. 需要搜索子文件夹时勾选 Include subfolders。GUI 每次启动默认不勾选。
+6. 点击 Start Export，等待进度结束；使用 Open Output Folder 查看结果和 reports 中的 CSV。
+后台导出期间不可重复启动任务；控件和进度在主线程更新。
+输入/输出目录、Min/Max、模式启动时均为空，四种格式默认不勾选。
+
+四种输出
+8-bit TIFF：uint8 单通道灰度，0–255，适合展示。
+16-bit TIFF：uint16 单通道灰度，0–65535，直接由原始像素映射，不经过 8-bit。
+PNG：8-bit 单通道灰度，与同范围 8-bit TIFF 解码后的像素及方向完全一致。
+Raw TIFF：保留 sif_parser 返回的 float32 像素，不缩放、不裁剪、不整数量化，不使用 Data Range。
+Raw TIFF 保留解析数组原始行序；显示 TIFF/PNG 默认上下翻转，与本批 Solis TIFF 的行方向一致。
+Raw TIFF 的目标是保留解析值，不是模拟 Solis Batch Conversion TIFF。
+
+三种 Data Range
+Custom Min–Max：所有图片使用相同范围，先裁剪再线性映射并 floor 向下取整。
+适合统一显示范围比较；超出范围会显示为黑或白。
+Min–Max (Solis Batch Conversion)：本批参考证实逐张图像使用自身最小/最大值。
+不同图片分别拉伸显示范围，因此不适合直接比较不同图片的原始荧光亮度。
+8-bit 使用 floor((x-min)/(max-min)*255)。16-bit 使用 float32 比例系数乘法、floor，最大值端点设为65535。
+0–65535 (Solis Batch Conversion)：16-bit 为裁剪至 0–65535 后取整；8-bit 为 floor(clip(x,0,65535)/65535*255)。
+超过65535的信号饱和为白色；8-bit 不是简单除以256。该模式不是逐图自动拉伸。
+本次四组共88张 Solis参考全部逐像素一致，但这不等于知道 Solis 内部源代码。
+常量图像的 Solis Min–Max 行为未得到实测，因此拒绝该模式，请选择 Custom 或 0–65535。
+多帧文件按帧处理；尚无 Solis 多帧参考。负数和小数原始信号的 Solis行为未用真实参考验证。
+
+文件命名和目录
+输入 sample.sif，Custom 范围12694–28977：
+display_tiff_8bit/sample_8bit_custom_12694-28977.tif
+display_tiff_16bit/sample_16bit_custom_12694-28977.tif
+display_png/sample_8bit_custom_12694-28977.png
+raw_tiff/sample_raw.tif
+Min–Max 名称为 sample_8bit_minmax.tif、sample_16bit_minmax.tif、sample_8bit_minmax.png。
+0–65535 名称为 sample_8bit_0-65535.tif、sample_16bit_0-65535.tif、sample_8bit_0-65535.png。
+小数点编码 p、负号编码 m、科学计数法正号编码 plus，例如 -1.5–3.25 为 custom_m1p5-3p25。
+不同范围名称不同，原有输出不覆盖。重复同一设置时请选择新目录或保留失败日志。
+多帧增加 _frame0001 等编号。递归时保留输入相对目录，避免子目录同名文件冲突。
+
+审计报告
+reports/audit_时间.csv：逐帧批处理状态、来源哈希和统计。
+reports/audit_时间_formats.csv：逐格式模式、用户/实际Min/Max、dtype、BitsPerSample、方向、路径、回读结果及错误。
+Raw TIFF 对应模式 none，范围为空，方向 native。
+PASS_INTERNAL 仅表示本程序内部导出回读一致，不代表独立读取器或 Solis 验证。
+
+科研使用
+不改写 SIF；无背景扣除、伽马、额外增强。显示 TIFF/PNG 不应代替原始数据做定量分析。
+保留原始 SIF；Raw TIFF 保留的是已解析 float32 数值，不承诺原文件编码精度或完整采集元数据。
+对照验证汇总和适用范围见 README.md 的 Validation and compatibility。
+
+高级本地验收
+EXE 支持 --batch 后接 Python CLI 的参数，使用相同核心算法，控制台日志写入输出 reports/frozen_console.txt。
+CLI 的默认递归行为仍为 True；GUI 默认 False。
+
+
+Image Intensity Analysis（图像强度范围分析）
+1. 选择 Input folder；需要包含子文件夹时勾选 Include subfolders（默认不勾选）。
+2. 点击 Data range 区域中的 Analyze SIF Intensity。
+   不要求 Output folder、Data Range、Custom Min/Max 或任何导出格式。
+3. 等待后台分析完成，在 Image Intensity Analysis 独立窗口查看结果。
+   分析期间主窗口显示已发现/已完成文件数、成功和失败数量，并禁止重复启动任务。
+4. 逐图表格按帧列出 File、Frame、Min、Max、Mean、Median、P1、P99。
+   File 为相对路径，区分子目录同名文件；Frame 从 1 开始。可滚动、点击表头排序。
+5. 点击 Export CSV，自行选择保存位置；CSV 同时包含摘要、逐帧数据和错误。
+   CSV 是 UTF-8 BOM，数值保留计算精度；界面为方便阅读显示至 12 位有效数字。
+6. 点击 Close 关闭结果窗口。
+
+四个核心统计值
+Lowest minimum：所有有效图像/帧最小值中的最小值。
+Highest minimum：所有有效图像/帧最小值中的最大值。
+Lowest maximum：所有有效图像/帧最大值中的最小值。
+Highest maximum：所有有效图像/帧最大值中的最大值。
+Overall intensity range：Lowest minimum 至 Highest maximum。
+Median of image minima / maxima：各有效帧最小值/最大值的中位数。
+
+分析仅使用解析出的原始像素，不使用 Display Min/Max，不映射、裁剪、翻转、归一化或扣背景。
+P1/P99 是线性插值的第 1/99 百分位数，只供判断主要强度分布，不是自动推荐范围。
+分析永远不会覆盖 Custom Min/Max。需要涵盖全部像素可参考 Overall intensity range；
+人工选择较窄范围可能突出较弱信号，但超出范围的较强信号会显示饱和。
+
+Files analyzed 是至少有一帧有效数据的文件数；Frames analyzed 是有效帧数。
+Fully successful 是所有帧都有效的文件数。Failed / partial 是读取失败或含无效帧的文件数。
+含 NaN/Inf 的整帧排除并保留错误，其他有效帧仍参与分析；因此分析文件数与失败/部分失败数可能重叠。
+Frames excluded 和 NaN/Inf pixels 分别报告被排除帧数和非有限像素数。读取失败的未知帧数不计入排除帧数。
+没有有效数据时核心指标显示 N/A，CSV 摘要对应数值留空。错误也会显示于主窗口日志及结果表格。
+关闭程序前需等当前任务结束。原始 SIF 永不被改写；CSV 保存仅接受 .csv 文件。
+
+Developed by Wenjia Zhang, Department of Chemistry, Fudan University.
+
+For research use only. Not for commercial use.
+
+开发者：张文镓（学术所属：复旦大学化学系）。软件由个人自主开发，仅供科研使用，不作商业用途。
+
+
+Copyright (c) 2026 Wenjia Zhang. All rights reserved.
+上述版权声明仅适用于 Wenjia Zhang 依法享有著作权的项目原创内容，第三方组件不受其覆盖。
+Department of Chemistry, Fudan University 仅为开发者的学术所属机构；软件并非复旦大学官方发布、拥有或支持。
+项目原创部分适用随包 LICENSE：允许免费下载、非商业科研使用、查看和构建运行未经修改的源码；
+修改、衍生开发、重新分发及商业使用须另行授权，法律、平台条款及第三方许可保留的权利不受限制。
+不限制用户发表自己的实验数据、处理结果和科研成果。
+系统要求：Windows 10/11 x64。完整解压后运行 EXE，保留 _internal 和许可证文件。
+
+首次运行前请阅读 MICROSOFT_RUNTIME_TERMS.txt 及其中指向的 Microsoft 运行库完整许可。
+使用随包 Microsoft 组件即表示接受其条款；不接受则不要使用组件或本捆绑应用。

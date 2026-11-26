@@ -1,0 +1,126 @@
+Andor SIF Batch Export — Non-Commercial Research Use License
+
+Copyright (c) 2026 Wenjia Zhang. All rights reserved.
+
+1. Scope and ownership
+
+This License applies only to the original code, documentation and other project
+materials of Andor SIF Batch Export in which Wenjia Zhang holds copyright
+(the "Project Materials"). It does not claim ownership of third-party materials.
+The licensor is Wenjia Zhang (the "Licensor").
+
+Developed by Wenjia Zhang, Department of Chemistry, Fudan University.
+For research use only. Not for commercial use.
+
+The academic affiliation identifies the developer only. Fudan University is not
+the copyright owner, official publisher, sponsor or official support provider of
+this software. No right to use any institution's logo or to claim endorsement is
+granted. This is source-available research software, not an open-source license.
+
+2. Limited permission
+
+Subject to this License, the Licensor grants you a non-exclusive, worldwide,
+royalty-free, non-transferable permission to:
+(a) download the software provided by the Licensor without charge;
+(b) install and run unmodified software provided by the Licensor for Non-Commercial
+    Research only, making copies reasonably necessary for installation and backup;
+(c) view and inspect publicly provided source code; and
+(d) download and copy unmodified source as reasonably necessary to build and run
+    it solely for Non-Commercial Research, including the ordinary compilation,
+    packaging and local dependency installation needed to produce that build.
+
+The permission in (d) does not authorize editing the Project Materials or
+distributing the source, a build, or a package. Installing separately licensed
+dependencies or supplying ordinary runtime settings does not itself modify the
+Project Materials. Retain applicable copyright, attribution and license notices
+in all permitted copies. No fee is payable to the Licensor for these permissions;
+ordinary internet, computing and third-party costs are not covered.
+
+3. Non-Commercial Research
+
+"Non-Commercial Research" means scientific investigation, research-method
+evaluation or research-related teaching carried out for personal or academic
+research purposes and not primarily directed toward commercial advantage,
+financial compensation for a product or service, or the business activities of
+a for-profit entity. Being a salaried academic researcher or receiving public
+or charitable research funding does not by itself make use commercial.
+
+Commercial product development, commercial testing or analysis services,
+consultancy, contract research for a commercial client, and research primarily
+conducted for a for-profit entity's business purposes are outside this grant.
+A non-profit institutional affiliation does not by itself make such use
+non-commercial. If the intended use falls outside this definition, obtain the
+Licensor's prior written authorization.
+
+4. Rights not granted and restrictions
+
+Except as expressly allowed in Section 2 or preserved in Section 6, this License
+does not grant permission to modify or adapt Project Materials, create derivative
+works or derivative software, redistribute, republish, sublicense, sell, rent,
+host for download, or otherwise supply Project Materials or software builds to
+other persons, or to use them for commercial purposes. Separate written
+authorization from Wenjia Zhang is required for uses outside this License.
+No patent or trademark license is granted. Do not remove or misrepresent
+authorship, notices or provenance, or imply endorsement by the developer,
+Fudan University, Andor, or third-party authors.
+
+This License does not claim ownership of your input data, exported images,
+statistics or research findings, and does not restrict publication or sharing
+of those outputs merely because the software produced them. It does not make
+an otherwise unauthorized commercial use permissible.
+
+5. Third-party materials
+
+Third-party software and materials, including sif_parser, NumPy, OpenBLAS,
+Pillow, tifffile, Python and Tcl/Tk, remain governed by their own licenses.
+Their copyrights and license notices must be retained as required by those
+licenses. This License does not replace or restrict rights their licensors
+grant, including any rights to use, modify, redistribute or commercially use
+those components. In any conflict concerning third-party materials, their
+applicable licenses govern those materials. See THIRD_PARTY_NOTICES.md and
+the accompanying third-party license texts. This License does not grant
+rights to third-party components beyond their applicable terms.
+
+Use of the bundled Microsoft runtime components requires acceptance of their
+Microsoft license terms, as described in MICROSOFT_RUNTIME_TERMS.txt and
+third_party/licenses/Microsoft-VC-Runtime-LICENSE.txt. If you do not accept
+those terms, do not use the components or the bundled application. This
+requirement applies only to those Microsoft components and preserves rights
+independently granted by Microsoft or required by applicable law.
+
+6. Applicable law and platform rights
+
+Nothing in this License excludes, restricts or conditions any right that cannot
+lawfully be excluded, restricted or conditioned under applicable law, including
+applicable copyright exceptions or limitations. Nothing in this License limits
+rights independently granted under applicable third-party licenses or applicable
+platform terms. If the Licensor publishes materials on GitHub, rights granted
+to GitHub and its users under the applicable GitHub Terms of Service, including
+permitted viewing, reproduction and forking through the service, are preserved.
+This does not grant additional off-platform redistribution or modification
+rights beyond those otherwise granted by law, the platform terms or this License.
+
+7. Disclaimer of warranty and limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE PROJECT MATERIALS
+AND SOFTWARE ARE PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY
+OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, ACCURACY OR RELIABILITY.
+THE LICENSOR DOES NOT WARRANT COMPATIBILITY WITH EVERY SIF FILE, INSTRUMENT
+OR SOLIS VERSION. YOU ARE RESPONSIBLE FOR PRESERVING ORIGINAL DATA AND
+VALIDATING RESULTS FOR YOUR RESEARCH.
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSOR SHALL NOT
+BE LIABLE FOR ANY CLAIM, DAMAGE OR OTHER LIABILITY, WHETHER IN CONTRACT,
+TORT OR OTHERWISE, ARISING FROM OR IN CONNECTION WITH THE PROJECT MATERIALS,
+SOFTWARE OR THEIR USE, INCLUDING DATA LOSS, INCORRECT RESULTS OR LOSS OF
+RESEARCH WORK. THIS SECTION DOES NOT EXCLUDE LIABILITY THAT APPLICABLE
+LAW DOES NOT PERMIT TO BE EXCLUDED.
+
+8. Reservation of rights
+
+All rights not expressly granted by this License are reserved by the Licensor
+or the respective third-party rights holders. No permission is implied from
+public visibility, availability without charge, or the developer's affiliation.
+Any use outside the permissions granted here requires Wenjia Zhang's prior
+written authorization, subject always to the rights preserved in Section 6.

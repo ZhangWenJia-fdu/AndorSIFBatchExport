@@ -1,0 +1,16 @@
+Microsoft runtime conditions for recipients
+
+The Microsoft Visual C++ runtime files in this application are Microsoft
+components. Before using them, read third_party/licenses/Microsoft-VC-Runtime-LICENSE.txt
+(Microsoft Visual C++ V14 Redistributable and Runtime, EULA ID Cpp_v14_ENU.1033).
+By using these components, you accept those Microsoft terms. If you do not
+accept them, do not use the components or this bundled application.
+
+Those terms, including restrictions on reverse engineering (with their stated
+exceptions), notice removal, transfer and redistribution, and their warranty,
+liability and legal-rights provisions, apply to the Microsoft components.
+The project license does not grant any additional rights in those components.
+Any redistribution requires separate applicable authorization; possession of
+this application alone does not grant Microsoft runtime redistribution rights.
+Rights independently granted by Microsoft or required by applicable law remain
+unaffected. No Microsoft sponsorship or endorsement is claimed.
