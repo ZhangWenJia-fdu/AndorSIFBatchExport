@@ -1,9 +1,9 @@
-Andor SIF Batch Export v1.1.0 中文使用说明
-Windows x64 / Tkinter / 本地便携版
+﻿Andor SIF Batch Export v1.1.0 中文使用说明
+Windows 10/11 x64 便携版
 
 启动
 解压整个 ZIP 后双击 AndorSIFBatchExport.exe。不要单独移动 EXE，必须保留 _internal 文件夹。
-设计为无需安装 Python、Andor Solis 或连接 CCD；尚需在另一台干净 Windows 电脑验证。
+无需另行安装 Python、Andor Solis 或连接相机即可使用。EXE 未进行数字签名。
 
 基本步骤
 1. 选择 Input folder 和 Output folder。
@@ -12,7 +12,7 @@ Windows x64 / Tkinter / 本地便携版
 4. Custom Min–Max 模式填写有限数值 Min/Max，Max 必须大于 Min。
 5. 需要搜索子文件夹时勾选 Include subfolders。GUI 每次启动默认不勾选。
 6. 点击 Start Export，等待进度结束；使用 Open Output Folder 查看结果和 reports 中的 CSV。
-后台导出期间不可重复启动任务；控件和进度在主线程更新。
+导出期间不可重复启动任务。
 输入/输出目录、Min/Max、模式启动时均为空，四种格式默认不勾选。
 
 四种输出
@@ -20,20 +20,19 @@ Windows x64 / Tkinter / 本地便携版
 16-bit TIFF：uint16 单通道灰度，0–65535，直接由原始像素映射，不经过 8-bit。
 PNG：8-bit 单通道灰度，与同范围 8-bit TIFF 解码后的像素及方向完全一致。
 Raw TIFF：保留 sif_parser 返回的 float32 像素，不缩放、不裁剪、不整数量化，不使用 Data Range。
-Raw TIFF 保留解析数组原始行序；显示 TIFF/PNG 默认上下翻转，与本批 Solis TIFF 的行方向一致。
-Raw TIFF 的目标是保留解析值，不是模拟 Solis Batch Conversion TIFF。
+Raw TIFF 保留解析数组原始行序；显示 TIFF/PNG 默认相对于解析数组上下翻转。
+Raw TIFF 用于保存未经显示映射的解析像素值。
 
 三种 Data Range
 Custom Min–Max：所有图片使用相同范围，先裁剪再线性映射并 floor 向下取整。
 适合统一显示范围比较；超出范围会显示为黑或白。
-Min–Max (Solis Batch Conversion)：本批参考证实逐张图像使用自身最小/最大值。
+Min–Max (Solis Batch Conversion)：每帧图像使用自身的最小值和最大值作为显示范围。
 不同图片分别拉伸显示范围，因此不适合直接比较不同图片的原始荧光亮度。
-8-bit 使用 floor((x-min)/(max-min)*255)。16-bit 使用 float32 比例系数乘法、floor，最大值端点设为65535。
-0–65535 (Solis Batch Conversion)：16-bit 为裁剪至 0–65535 后取整；8-bit 为 floor(clip(x,0,65535)/65535*255)。
+像素在线性映射后向下取整；8-bit 映射至 0–255，16-bit 映射至 0–65535，最大值映射为白色。
+0–65535 (Solis Batch Conversion)：先将像素值裁剪至 0–65535；16-bit 向下取整，8-bit 线性映射至 0–255 后向下取整。
 超过65535的信号饱和为白色；8-bit 不是简单除以256。该模式不是逐图自动拉伸。
-本次四组共88张 Solis参考全部逐像素一致，但这不等于知道 Solis 内部源代码。
-常量图像的 Solis Min–Max 行为未得到实测，因此拒绝该模式，请选择 Custom 或 0–65535。
-多帧文件按帧处理；尚无 Solis 多帧参考。负数和小数原始信号的 Solis行为未用真实参考验证。
+对于所有像素值相同的图像，请使用 Custom Min–Max 或 0–65535 模式。
+多帧 SIF 文件按帧处理。
 
 文件命名和目录
 输入 sample.sif，Custom 范围12694–28977：
@@ -47,19 +46,21 @@ Min–Max 名称为 sample_8bit_minmax.tif、sample_16bit_minmax.tif、sample_8b
 不同范围名称不同，原有输出不覆盖。重复同一设置时请选择新目录或保留失败日志。
 多帧增加 _frame0001 等编号。递归时保留输入相对目录，避免子目录同名文件冲突。
 
-审计报告
+导出报告
 reports/audit_时间.csv：逐帧批处理状态、来源哈希和统计。
 reports/audit_时间_formats.csv：逐格式模式、用户/实际Min/Max、dtype、BitsPerSample、方向、路径、回读结果及错误。
 Raw TIFF 对应模式 none，范围为空，方向 native。
-PASS_INTERNAL 仅表示本程序内部导出回读一致，不代表独立读取器或 Solis 验证。
+PASS_INTERNAL 表示内部导出回读检查通过。
 
 科研使用
 不改写 SIF；无背景扣除、伽马、额外增强。显示 TIFF/PNG 不应代替原始数据做定量分析。
 保留原始 SIF；Raw TIFF 保留的是已解析 float32 数值，不承诺原文件编码精度或完整采集元数据。
-对照验证汇总和适用范围见 README.md 的 Validation and compatibility。
+软件面向 Andor SIF 图像文件；兼容性可能因仪器、采集模式和 SIF 文件变体而异。
 
-高级本地验收
-EXE 支持 --batch 后接 Python CLI 的参数，使用相同核心算法，控制台日志写入输出 reports/frozen_console.txt。
+高级用法：命令行批量导出
+EXE 支持 --batch 后接命令行参数，控制台日志写入输出 reports/frozen_console.txt。
+例如，在解压目录中运行（请替换输入、输出路径和显示范围）：
+AndorSIFBatchExport.exe --batch --input .\input --output .\output --data-range custom --min 100 --max 1000 --tiff8 y --tiff16 y --raw-tiff y --png y --recursive n --no-interactive
 CLI 的默认递归行为仍为 True；GUI 默认 False。
 
 

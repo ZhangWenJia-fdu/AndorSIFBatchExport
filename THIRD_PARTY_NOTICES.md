@@ -39,7 +39,7 @@ a replacement copyright statement. No endorsement is claimed.
 
 ## Other application components
 
-| Component | Version in the reviewed environment | License / notice location |
+| Component | Version | License / notice location |
 | --- | --- | --- |
 | Python / Tkinter | Python 3.13.5 | PSF and historical licenses; Python-LICENSE.txt and Python-third-party-notices.txt |
 | Tcl/Tk | 8.6 family | Tcl-Tk-license.terms and component notices |
@@ -96,7 +96,7 @@ No Microsoft endorsement is claimed.
 ## Indirect, build and test dependencies
 
 pandas 3.0.6, python-dateutil 2.9.0.post0, six 1.17.0 and tzdata 2026.5 satisfy
-declared installation dependencies. The reviewed executable archive does not
+declared installation dependencies. The executable archive does not
 contain pandas. Installed packages are not all runtime-distributed components.
 
 PyInstaller 6.22.3 is a build tool; its bootloader exception permits applications

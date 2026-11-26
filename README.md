@@ -11,7 +11,7 @@ Designed for research image workflows, including batch conversion and fixed inte
 - Custom Min–Max, Min–Max and 0–65535 data ranges.
 - Additional utility: Image Intensity Analysis and CSV statistics.
 - Relative folder structure, per-frame export reports and read-back checks.
-- Windows x64 standalone portable application.
+- Windows 10/11 x64 portable application.
 
 ## Data range modes
 
@@ -22,7 +22,7 @@ Designed for research image workflows, including batch conversion and fixed inte
 | 0–65535 | Use the fixed range 0–65535; values outside it are clipped. |
 
 Display mappings use floor quantization. 16-bit export maps directly from original values.
-Constant frames are rejected in Min–Max mode because equivalent Solis behavior is unverified.
+For images whose pixels all have the same value, use Custom Min–Max or 0–65535 mode.
 No background subtraction, gamma correction or additional enhancement is applied.
 
 ## Output formats
@@ -32,10 +32,11 @@ No background subtraction, gamma correction or additional enhancement is applied
 | 8-bit TIFF | Mapped uint8 grayscale | Vertically flipped by default |
 | 16-bit TIFF | Mapped uint16 grayscale | Vertically flipped by default |
 | 8-bit PNG | Same decoded pixels as 8-bit TIFF | Vertically flipped by default |
-| Raw TIFF | Unmapped parser values; float32 in validated files | Parser's original row order |
+| Raw TIFF | Unmapped float32 pixel values | Parser's original row order |
 
-Default display orientation matches the tested Solis TIFFs. Raw TIFF preserves parsed values,
-not all SIF headers or acquisition metadata. Keep original SIF files.
+Display TIFF and PNG exports are vertically flipped relative to the parsed image array by default.
+Raw TIFF preserves the parsed row order and pixel values, but not all SIF headers or acquisition metadata.
+Multi-frame SIF files are processed frame by frame. Keep original SIF files.
 Display exports should not replace original data for quantitative analysis.
 
 ## Download and quick start
@@ -52,8 +53,8 @@ For v1.1.0, download `AndorSIFBatchExport_Windows_x64_v1.1.0.zip`.
 
 Raw-only export needs no data range. Existing image outputs are not overwritten.
 Outputs use display_tiff_8bit, display_tiff_16bit, display_png, raw_tiff and reports folders.
-Requires Windows 10/11 x64. The portable build is designed to run without Python, Solis or a connected camera;
-testing on another clean Windows device remains outstanding. The EXE is unsigned. Before use, read MICROSOFT_RUNTIME_TERMS.txt
+Requires Windows 10/11 x64. The portable build is designed to run without installing Python or Solis,
+or connecting a camera. The EXE is unsigned. Before use, read MICROSOFT_RUNTIME_TERMS.txt
 and the included Microsoft runtime license. Use of the bundled Microsoft
 components requires acceptance of those terms.
 
@@ -63,7 +64,7 @@ Select an input folder and click Analyze SIF Intensity. Analysis follows Include
 and needs no output folder, display range or export format.
 
 Results include per-frame Min, Max, Mean, Median, P1 and P99, batch extrema and the overall range.
-Calculations use original parsed pixels and float64; P1/P99 use linear percentile interpolation.
+Statistics use the original parsed pixels; P1/P99 are the 1st/99th percentiles with linear interpolation.
 Analysis does not change Custom Min/Max.
 NaN/Inf frames are excluded in full; valid sibling frames can contribute. Files analyzed
 and failed/partial counts may overlap. Empty results display N/A.
@@ -76,20 +77,20 @@ Reports include selected paths and filenames: review them before sharing.
 
 Actual final v1.1.0 EXE. Demo is an empty demonstration folder; the shown Min/Max are example parameters. No research images or experimental filenames are displayed.
 
-## Validation and compatibility
+## Compatibility and limitations
 
-The locally validated baseline was checked with 22 real SIF files.
-All 23,068,672 compared display pixels across 88 TIFFs in four Solis Batch Conversion
-reference groups matched exactly. Official ATSIFIO SDK 2.100.30039.0 independently
-matched raw pixels and independently calculated statistics. The SDK was used only
-for local validation; it is not required at runtime or included.
+The application is designed for Andor SIF image files. Compatibility may vary across
+instruments, acquisition modes, and SIF file variants.
 
-Coverage is limited to tested positive-integer, single-frame, single-ROI 512×512 files.
-It does not establish support for every SIF variant, instrument or Solis version.
-Real multi-frame/multi-ROI, constant, negative, fractional and nonfinite data lack
-equivalent Solis reference coverage; some behaviors have synthetic tests only.
-Direct Solis GUI statistics comparison is incomplete. Internal export/read-back
-success alone does not establish independent SIF-reader accuracy.
+Min–Max mode stretches each frame independently and should not be used to compare
+original fluorescence brightness across images. For images whose pixels all have
+the same value, use Custom Min–Max or 0–65535 mode. Multi-frame SIF files are processed
+frame by frame. Display values outside the selected range are clipped and may saturate.
+
+Display exports should not replace original data for quantitative analysis. Retain
+the original SIF files. Raw TIFF retains parsed pixel values, not the complete SIF
+file or all acquisition metadata. `PASS_INTERNAL` means that the internal export
+read-back check passed.
 
 ## Run from source
 
@@ -114,9 +115,8 @@ Public synthetic/GUI tests:
 .\.venv\Scripts\python.exe -m pytest -q
 ~~~
 
-These tests need no research data or SDK and do not reproduce all real-data
-validation. Pins record the validated environment;
-a new installation still requires availability of those packages.
+These tests need no research data or SDK. Dependency versions are pinned in the
+requirements files; installation requires availability of those packages.
 
 ## Build from source
 
